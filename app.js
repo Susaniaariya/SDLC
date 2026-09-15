@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require("mongoose");
 
 const MONGO_URL = "mongodb://127.0.0.1:27017/MyNewProject";
-
+app.set("view engine", "ejs");
 mongoose
   .connect(MONGO_URL)
   .then(() => console.log("Connected to DB"))
@@ -11,7 +11,7 @@ mongoose
 
 // Home route
 app.get("/", (req, res) => {
-  res.send("Hi I am YatraStay");
+  res.render("home.ejs");
 });
 
 // --- Start server ---
