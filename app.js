@@ -11,7 +11,7 @@ mongoose
 
 // Home route
 app.get("/", (req, res) => {
-  res.send("Hi I am root");
+  res.send("Hi I am YatraStay");
 });
 
 // --- Start server ---
