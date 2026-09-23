@@ -20,4 +20,12 @@
       false,
     );
   });
+
+  // Auto-dismiss flash toasts after a few seconds
+  document.querySelectorAll(".flash-stack .alert").forEach((alertEl) => {
+    setTimeout(() => {
+      const alert = bootstrap.Alert.getOrCreateInstance(alertEl);
+      alert.close();
+    }, 4500);
+  });
 })();

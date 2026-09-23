@@ -1,0 +1,147 @@
+<% layout("layouts/boilerplate.ejs") %>
+
+<!-- HERO -->
+<section class="home-hero mt-3" style="background-image: url('/images/heritage/angkor-wat.jpg');">
+  <div class="home-hero-overlay">
+    <span class="home-eyebrow"><i class="fa-solid fa-earth-asia me-2"></i>Southeast Asia &amp; beyond</span>
+    <h1>Stay where history lives.</h1>
+    <p>YatraStay connects travellers with welcoming hosts across Southeast Asia &mdash; from temple towns and ancient trading ports to quiet mountain villages.</p>
+    <div class="home-hero-actions">
+      <a href="/listings" class="btn btn-light btn-lg">Explore stays</a>
+      <a href="/listings/new" class="btn btn-outline-light btn-lg">Host your place</a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT / FOCUS -->
+<section class="home-section">
+  <div class="row align-items-center g-4">
+    <div class="col-lg-6">
+      <span class="section-eyebrow">About YatraStay</span>
+      <h2 class="section-title">Travel with a story, not just a booking.</h2>
+      <p class="section-lead">
+        &ldquo;Yatra&rdquo; means journey. We're a community marketplace for places to stay, built around the idea that
+        where you sleep should be part of what you remember.
+      </p>
+      <p class="section-lead">
+        Our main focus is <strong>Southeast Asia</strong> &mdash; Cambodia, Indonesia, Myanmar, Thailand, Vietnam and their
+        neighbours &mdash; while also welcoming hosts from the wider Asian region, including our home in Nepal.
+      </p>
+    </div>
+    <div class="col-lg-6">
+      <div class="row g-3">
+        <div class="col-sm-6">
+          <div class="feature-card">
+            <i class="fa-solid fa-landmark"></i>
+            <h5>Heritage first</h5>
+            <p>Stays near temples, old towns and living cultural sites.</p>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="feature-card">
+            <i class="fa-solid fa-house-user"></i>
+            <h5>Local hosts</h5>
+            <p>List your own place and share your corner of the region.</p>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="feature-card">
+            <i class="fa-solid fa-star"></i>
+            <h5>Honest reviews</h5>
+            <p>Ratings and comments from travellers who actually stayed.</p>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="feature-card">
+            <i class="fa-solid fa-compass"></i>
+            <h5>Simple to use</h5>
+            <p>Browse, review and host with a clean, no-fuss experience.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORICAL PLACES -->
+<section class="home-section">
+  <span class="section-eyebrow">Places worth the trip</span>
+  <h2 class="section-title">Historic destinations across the region</h2>
+  <p class="section-lead mb-4">A few of the landmarks that make Asia unforgettable &mdash; and the kind of neighbourhoods our hosts call home.</p>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    <% const places = [
+      { img: "borobudur", name: "Borobudur", where: "Central Java, Indonesia", text: "A 9th-century Buddhist temple crowned with stupas and carved stone galleries." },
+      { img: "bagan", name: "Bagan", where: "Mandalay Region, Myanmar", text: "A plain dotted with thousands of temples and pagodas from the 11th to 13th centuries." },
+      { img: "ayutthaya", name: "Ayutthaya", where: "Thailand", text: "The ruined former capital of the Siamese kingdom, founded in the 14th century." },
+      { img: "hoi-an", name: "Hoi An Ancient Town", where: "Quang Nam, Vietnam", text: "A beautifully preserved trading port of lantern-lit lanes and old merchant houses." },
+      { img: "kathmandu", name: "Kathmandu Durbar Square", where: "Kathmandu, Nepal", text: "The historic royal square, a cluster of pagoda-style temples and palaces." },
+      { img: "ha-long-bay", name: "Ha Long Bay", where: "Quang Ninh, Vietnam", text: "Limestone islands rising from emerald water, explored by boat for centuries." }
+    ]; %>
+    <% for (let p of places) { %>
+      <div class="col">
+        <article class="place-card">
+          <div class="place-img" style="background-image: url('/images/heritage/<%= p.img %>.jpg');"></div>
+          <div class="place-body">
+            <span class="place-where"><i class="fa-solid fa-location-dot me-1"></i><%= p.where %></span>
+            <h5><%= p.name %></h5>
+            <p><%= p.text %></p>
+          </div>
+        </article>
+      </div>
+    <% } %>
+  </div>
+  <p class="photo-credit">Photos via Wikimedia Commons, used under their respective open licences.</p>
+</section>
+
+<!-- FEATURED LISTINGS -->
+<section class="home-section">
+  <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+    <div>
+      <span class="section-eyebrow">Featured stays</span>
+      <h2 class="section-title mb-0">Find your next place</h2>
+    </div>
+    <a href="/listings" class="see-all">See all listings <i class="fa-solid fa-arrow-right ms-1"></i></a>
+  </div>
+
+  <% if (!featured || featured.length === 0) { %>
+    <div class="empty-state">
+      <i class="fa-regular fa-compass"></i>
+      <h5>No listings yet</h5>
+      <p>Be the first to add a place to stay.</p>
+      <a href="/listings/new" class="btn btn-dark add-btn mt-2">Add a listing</a>
+    </div>
+  <% } else { %>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+      <% for (let listing of featured) { %>
+        <div class="col">
+          <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
+            <div class="card h-100 shadow-sm border-0 listing-card">
+              <div class="position-relative card-img-top-wrap">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 18rem;" />
+                <div class="card-img-overlay d-flex align-items-end p-2" style="background: linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%);">
+                  <h5 class="text-white mb-0"><%= listing.title %></h5>
+                </div>
+              </div>
+              <div class="card-body">
+                <p class="card-text mb-1 text-truncate">
+                  <i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>, <%= listing.country %>
+                </p>
+                <p class="price-chip mb-0">
+                  &#2352;<%= Number(listing.price || 0).toLocaleString("en-NP") %> <span class="card-text">/ night</span>
+                </p>
+              </div>
+            </div>
+          </a>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</section>
+
+<!-- CTA -->
+<section class="home-cta">
+  <h2>Have a place to share?</h2>
+  <p>Become a YatraStay host and welcome travellers to your part of the world.</p>
+  <a href="/listings/new" class="btn btn-light btn-lg">List your place</a>
+</section>

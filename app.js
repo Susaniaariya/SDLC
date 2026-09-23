@@ -32,10 +32,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // --- Session configuration ---
 
-// Home route
-app.get("/", (req, res) => {
-  res.send("Hi I am root");
-});
 app.use(
   session({
     secret: "your-secret",
@@ -81,6 +77,16 @@ app.use("/listings", listingRouter);
 app.use("/listings", reviewRouter);
 
 const Listing = require("./models/listing");
+
+// Home route
+app.get("/", async (req, res, next) => {
+  try {
+    const featured = await Listing.find({}).limit(4);
+    res.render("home.ejs", { featured });
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.get("/test-listings", async (req, res) => {
   try {
