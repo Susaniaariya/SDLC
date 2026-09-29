@@ -1,9 +1,9 @@
 <% layout("layouts/boilerplate.ejs") %>
 
 <!-- HERO -->
-<section class="home-hero mt-3" style="background-image: url('/images/heritage/angkor-wat.jpg');">
+<section class="home-hero" style="background-image: url('/images/heritage/heroimage.jpg');">
   <div class="home-hero-overlay">
-    <span class="home-eyebrow"><i class="fa-solid fa-earth-asia me-2"></i>Southeast Asia &amp; beyond</span>
+    <span class="home-eyebrow"><i class="fa-solid fa-dharmachakra me-2"></i>Southeast Asia &amp; beyond</span>
     <h1>Stay where history lives.</h1>
     <p>YatraStay connects travellers with welcoming hosts across Southeast Asia &mdash; from temple towns and ancient trading ports to quiet mountain villages.</p>
     <div class="home-hero-actions">
@@ -17,7 +17,7 @@
 <section class="home-section">
   <div class="row align-items-center g-4">
     <div class="col-lg-6">
-      <span class="section-eyebrow">About YatraStay</span>
+      <span class="section-eyebrow"><i class="fa-solid fa-vihara"></i>About YatraStay</span>
       <h2 class="section-title">Travel with a story, not just a booking.</h2>
       <p class="section-lead">
         &ldquo;Yatra&rdquo; means journey. We're a community marketplace for places to stay, built around the idea that
@@ -63,9 +63,20 @@
   </div>
 </section>
 
-<!-- HISTORICAL PLACES -->
+<!-- CULTURAL NOTE -->
 <section class="home-section">
-  <span class="section-eyebrow">Places worth the trip</span>
+  <div class="cultural-band">
+    <i class="fa-solid fa-dharmachakra"></i>
+    <blockquote>&ldquo;Atithi Devo Bhava&rdquo; &mdash; the guest is akin to a god. From Nepal's courtyards to Southeast Asia's temple towns, hospitality has always been treated as sacred, not transactional. We built YatraStay to carry that spirit online.</blockquote>
+    <cite>A tradition we host by</cite>
+  </div>
+</section>
+
+<div class="motif-divider"><i class="fa-solid fa-dharmachakra"></i></div>
+
+<!-- HISTORICAL PLACES -->
+<section class="home-section" style="padding-top: 0;">
+  <span class="section-eyebrow"><i class="fa-solid fa-landmark-dome"></i>Places worth the trip</span>
   <h2 class="section-title">Historic destinations across the region</h2>
   <p class="section-lead mb-4">A few of the landmarks that make Asia unforgettable &mdash; and the kind of neighbourhoods our hosts call home.</p>
 
@@ -76,7 +87,7 @@
       { img: "ayutthaya", name: "Ayutthaya", where: "Thailand", text: "The ruined former capital of the Siamese kingdom, founded in the 14th century." },
       { img: "hoi-an", name: "Hoi An Ancient Town", where: "Quang Nam, Vietnam", text: "A beautifully preserved trading port of lantern-lit lanes and old merchant houses." },
       { img: "kathmandu", name: "Kathmandu Durbar Square", where: "Kathmandu, Nepal", text: "The historic royal square, a cluster of pagoda-style temples and palaces." },
-      { img: "ha-long-bay", name: "Ha Long Bay", where: "Quang Ninh, Vietnam", text: "Limestone islands rising from emerald water, explored by boat for centuries." }
+      { img: "shwedagon", name: "Shwedagon Pagoda", where: "Yangon, Myanmar", text: "A gilded 2,600-year-old stupa that remains the spiritual heart of the city." }
     ]; %>
     <% for (let p of places) { %>
       <div class="col">
@@ -98,7 +109,7 @@
 <section class="home-section">
   <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
     <div>
-      <span class="section-eyebrow">Featured stays</span>
+      <span class="section-eyebrow"><i class="fa-solid fa-house-chimney"></i>Featured stays</span>
       <h2 class="section-title mb-0">Find your next place</h2>
     </div>
     <a href="/listings" class="see-all">See all listings <i class="fa-solid fa-arrow-right ms-1"></i></a>

@@ -11,6 +11,10 @@
   --surface: #ffffff;
   --surface-alt: #f7f7f8;
   --border: #ececec;
+  --gold: #c9971f;
+  --gold-dark: #9c7414;
+  --gold-soft: #f7ecd2;
+  --ivory: #fbf7ee;
   --radius-lg: 1.25rem;
   --radius-md: 0.9rem;
   --radius-sm: 0.6rem;
@@ -268,7 +272,7 @@ h1, h2, h3, h4, h5, h6 {
   display: inline-block;
   margin-top: 0.15rem;
   font-weight: 700;
-  color: var(--ink);
+  color: var(--gold-dark);
 }
 
 /* Card image title overlay */
@@ -421,7 +425,7 @@ h1, h2, h3, h4, h5, h6 {
 .listing-price {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--ink);
+  color: var(--gold-dark);
 }
 
 .listing-meta {
@@ -547,6 +551,21 @@ footer {
   margin-top: 3rem;
 }
 
+.footer-motif {
+  height: 6px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--gold) 0,
+    var(--gold) 8px,
+    var(--gold-dark) 8px,
+    var(--gold-dark) 16px
+  );
+}
+
+.f-info-brand i {
+  color: var(--gold);
+}
+
 .f-info {
   display: flex;
   padding: 3rem 1.5rem 2rem;
@@ -634,23 +653,26 @@ footer {
    Home page
    ========================================================================== */
 .home-hero {
-  min-height: 72vh;
-  border-radius: var(--radius-lg);
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  height: calc(100vh - 5rem);
+  min-height: 32rem;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   overflow: hidden;
   display: flex;
-  box-shadow: var(--shadow-lg);
 }
 
 .home-hero-overlay {
   width: 100%;
-  padding: 4rem 3rem;
+  padding: 4rem 6vw;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   color: #fff;
-  background: linear-gradient(to top, rgba(10, 10, 10, 0.78) 10%, rgba(10, 10, 10, 0.25) 70%);
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.82) 5%, rgba(10, 10, 10, 0.35) 55%, rgba(10, 10, 10, 0.05) 85%);
 }
 
 .home-hero h1 {
@@ -675,6 +697,11 @@ footer {
   border-radius: 999px;
   font-size: 0.85rem;
   font-weight: 600;
+  border: 1px solid rgba(201, 151, 31, 0.55);
+}
+
+.home-eyebrow i {
+  color: var(--gold);
 }
 
 .home-hero-actions {
@@ -693,13 +720,89 @@ footer {
 }
 
 .section-eyebrow {
-  display: block;
-  color: var(--brand);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--gold-dark);
   font-weight: 700;
   font-size: 0.8rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-eyebrow i {
+  color: var(--gold);
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   Asian motif accents
+   ========================================================================== */
+.motif-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 3rem 0;
+  color: var(--gold);
+}
+
+.motif-divider::before,
+.motif-divider::after {
+  content: "";
+  height: 1px;
+  flex: 1 1 auto;
+  max-width: 220px;
+  background: linear-gradient(90deg, transparent, var(--gold-soft) 40%, var(--gold) 100%);
+}
+
+.motif-divider::after {
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-soft) 60%, transparent);
+}
+
+.motif-divider i {
+  font-size: 1.1rem;
+}
+
+.cultural-band {
+  margin: 3rem 0 0;
+  padding: 3rem 2.5rem;
+  border-radius: var(--radius-lg);
+  background-color: var(--ivory);
+  background-image:
+    linear-gradient(135deg, var(--gold-soft) 0%, transparent 35%),
+    linear-gradient(-135deg, var(--gold-soft) 0%, transparent 35%);
+  background-repeat: no-repeat;
+  background-position: top left, top right;
+  border: 1px solid var(--gold-soft);
+  text-align: center;
+}
+
+.cultural-band i {
+  color: var(--gold);
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.cultural-band blockquote {
+  font-family: "Noto Serif", serif;
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.4vw, 1.5rem);
+  color: var(--ink);
+  max-width: 46ch;
+  margin: 0 auto 0.75rem;
+  line-height: 1.6;
+}
+
+.cultural-band cite {
+  display: block;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--gold-dark);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .section-title {
