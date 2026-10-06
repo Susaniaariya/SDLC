@@ -1,7 +1,34 @@
 const Listing = require("../models/listing");
+
+const PRICE_SLIDER_MAX = 20000;
+
 module.exports.index = async (req, res) => {
-  const allListings = await Listing.find({});
-  res.render("listings/index", { allListings });
+  const search = (req.query.search || "").trim();
+
+  let minPrice = Number(req.query.minPrice);
+  let maxPrice = Number(req.query.maxPrice);
+  if (!Number.isFinite(minPrice) || minPrice < 0) minPrice = 0;
+  if (!Number.isFinite(maxPrice) || maxPrice > PRICE_SLIDER_MAX) maxPrice = PRICE_SLIDER_MAX;
+
+  const filter = {};
+  if (search) {
+    const regex = new RegExp(search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    filter.$or = [{ title: regex }, { location: regex }, { country: regex }];
+  }
+  if (minPrice > 0 || maxPrice < PRICE_SLIDER_MAX) {
+    filter.price = {};
+    if (minPrice > 0) filter.price.$gte = minPrice;
+    if (maxPrice < PRICE_SLIDER_MAX) filter.price.$lte = maxPrice;
+  }
+
+  const allListings = await Listing.find(filter);
+  res.render("listings/index", {
+    allListings,
+    search,
+    minPrice,
+    maxPrice,
+    sliderMax: PRICE_SLIDER_MAX,
+  });
 };
 module.exports.renderNewForm = (req, res) => {
   res.render("listings/new.ejs");
