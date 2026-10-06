@@ -7,12 +7,23 @@
       <p>Handpicked places to stay, curated by the YatraStay community.</p>
     </div>
 
+    <% const hasFilters = (search && search.length) || minPrice > 0 || maxPrice < sliderMax; %>
+    <div class="page-search-filter">
+      <%- include("../includes/searchFilter", { search, minPrice, maxPrice, sliderMax }) %>
+    </div>
+
     <% if (!allListings || allListings.length === 0) { %>
       <div class="empty-state">
         <i class="fa-regular fa-compass"></i>
-        <h5>No listings yet</h5>
-        <p>Be the first to add a place to stay.</p>
-        <a href="/listings/new" class="btn btn-dark add-btn mt-2">Add a listing</a>
+        <% if (hasFilters) { %>
+          <h5>No listings match your search</h5>
+          <p>Try a different keyword or price range.</p>
+          <a href="/listings" class="btn btn-dark add-btn mt-2">Clear filters</a>
+        <% } else { %>
+          <h5>No listings yet</h5>
+          <p>Be the first to add a place to stay.</p>
+          <a href="/listings/new" class="btn btn-dark add-btn mt-2">Add a listing</a>
+        <% } %>
       </div>
     <% } else { %>
       <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mt-1">

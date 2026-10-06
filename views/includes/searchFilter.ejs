@@ -1,0 +1,51 @@
+<form class="search-filter" action="/listings" method="GET" role="search">
+  <div class="search-filter-bar">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input
+      type="text"
+      name="search"
+      value="<%= search %>"
+      placeholder="Search by title, location or country"
+      aria-label="Search listings"
+      class="search-filter-input"
+    />
+    <button type="button" class="search-filter-toggle" aria-label="Filters" aria-expanded="false">
+      <i class="fa-solid fa-sliders"></i>
+    </button>
+    <button type="submit" class="search-filter-submit" aria-label="Search">
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </div>
+
+  <div class="filter-popover" hidden>
+    <div class="filter-popover-section">
+      <label class="filter-popover-label">Price range (per night)</label>
+      <div class="price-slider" data-max="<%= sliderMax %>" data-init-min="<%= minPrice %>" data-init-max="<%= maxPrice %>">
+        <div class="price-slider-track">
+          <div class="price-slider-range"></div>
+          <button type="button" class="price-slider-handle" data-handle="min" aria-label="Minimum price"></button>
+          <button type="button" class="price-slider-handle" data-handle="max" aria-label="Maximum price"></button>
+        </div>
+        <div class="price-slider-values">
+          <span class="price-slider-min-label"></span>
+          <span class="price-slider-max-label"></span>
+        </div>
+      </div>
+      <input type="hidden" name="minPrice" class="price-slider-min-input" value="<%= minPrice %>" />
+      <input type="hidden" name="maxPrice" class="price-slider-max-input" value="<%= maxPrice %>" />
+    </div>
+
+    <div class="filter-popover-section">
+      <label class="filter-popover-label">Location</label>
+      <button type="button" class="location-btn">
+        <i class="fa-solid fa-location-crosshairs me-1"></i>Use my current location
+      </button>
+      <p class="location-status"></p>
+    </div>
+
+    <div class="filter-popover-actions">
+      <button type="button" class="btn btn-outline-dark btn-sm filter-clear">Clear</button>
+      <button type="submit" class="btn btn-dark btn-sm">Apply filters</button>
+    </div>
+  </div>
+</form>
