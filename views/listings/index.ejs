@@ -45,6 +45,9 @@
                 </div>
 
                 <div class="card-body">
+                  <% if (listing.propertyType) { %>
+                    <span class="property-type-badge mb-1"><%= listing.propertyType %></span>
+                  <% } %>
                   <p class="card-text mb-1 text-truncate">
                     <i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>, <%= listing.country %>
                   </p>

@@ -52,13 +52,16 @@ module.exports.showListing = async (req, res) => {
 };
 
 module.exports.createListing = async (req, res) => {
-  const newListing = new Listing(req.body.listing);
+  const listingData = { ...req.body.listing };
+  if (!listingData.propertyType) delete listingData.propertyType;
+
+  const newListing = new Listing(listingData);
   console.log(req.user);
   newListing.owner = req.user._id;
 
   await newListing.save();
   req.flash("success", "New Listing created!");
-  res.redirect("/listings");
+  res.redirect(`/listings/${newListing._id}`);
 };
 module.exports.editListing = async (req, res) => {
   let { id } = req.params;
@@ -71,7 +74,9 @@ module.exports.editListing = async (req, res) => {
 };
 module.exports.updateListing = async (req, res) => {
   let { id } = req.params;
-  await Listing.findByIdAndUpdate(id, { ...req.body.listing });
+  const listingData = { ...req.body.listing };
+  if (!listingData.propertyType) delete listingData.propertyType;
+  await Listing.findByIdAndUpdate(id, listingData, { runValidators: true });
   req.flash("success", "Listing updated!");
   res.redirect(`/listings/${id}`);
 };

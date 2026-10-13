@@ -200,4 +200,197 @@
       );
     });
   });
+
+  // Property type cards: visual selection state
+  document.querySelectorAll(".property-type-card").forEach((card) => {
+    const input = card.querySelector("input[type=radio]");
+    if (!input) return;
+    const syncSelected = () => {
+      const name = input.name;
+      document.querySelectorAll(`input[name="${CSS.escape(name)}"]`).forEach((other) => {
+        other.closest(".property-type-card")?.classList.toggle("is-selected", other.checked);
+      });
+    };
+    input.addEventListener("change", syncSelected);
+    syncSelected();
+  });
+
+  // Host onboarding wizard: step navigation
+  document.querySelectorAll(".host-wizard").forEach((wizard) => {
+    const steps = Array.from(wizard.querySelectorAll(".host-step"));
+    const dots = Array.from(wizard.querySelectorAll(".host-step-dot"));
+    const backBtn = wizard.querySelector(".host-back");
+    const nextBtn = wizard.querySelector(".host-next");
+    const submitBtn = wizard.querySelector(".host-submit");
+    if (!steps.length || !nextBtn) return;
+
+    let current = 0;
+
+    function show(index) {
+      steps.forEach((s, i) => {
+        s.hidden = i !== index;
+      });
+      dots.forEach((d, i) => d.classList.toggle("is-active", i <= index));
+      if (backBtn) backBtn.hidden = index === 0;
+      nextBtn.hidden = index === steps.length - 1;
+      if (submitBtn) submitBtn.hidden = index !== steps.length - 1;
+      current = index;
+    }
+
+    function validateStep(index) {
+      const fields = steps[index].querySelectorAll("input[required], textarea[required], select[required]");
+      let valid = true;
+      fields.forEach((f) => {
+        if (!f.checkValidity()) {
+          valid = false;
+          f.reportValidity();
+        }
+      });
+      return valid;
+    }
+
+    nextBtn.addEventListener("click", () => {
+      if (!validateStep(current)) return;
+      if (current < steps.length - 1) show(current + 1);
+    });
+
+    if (backBtn) {
+      backBtn.addEventListener("click", () => {
+        if (current > 0) show(current - 1);
+      });
+    }
+
+    show(0);
+  });
+
+  // Host onboarding: Leaflet map for pinning the property's address
+  document.querySelectorAll(".host-map").forEach((mapEl) => {
+    if (typeof L === "undefined") return;
+    const form = mapEl.closest("form");
+    if (!form) return;
+
+    const latInput = form.querySelector(".map-lat-input");
+    const lngInput = form.querySelector(".map-lng-input");
+    const locationInput = form.querySelector(".map-location-input");
+    const countryInput = form.querySelector(".map-country-input");
+    const searchInput = form.querySelector(".map-search-input");
+    const searchBtn = form.querySelector(".map-search-btn");
+    const locateBtn = form.querySelector(".map-locate-btn");
+    const statusEl = form.querySelector(".map-status");
+
+    const startLat = Number(mapEl.dataset.lat) || 27.7172;
+    const startLng = Number(mapEl.dataset.lng) || 85.324;
+
+    const map = L.map(mapEl).setView([startLat, startLng], 12);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+      maxZoom: 19,
+    }).addTo(map);
+
+    const marker = L.marker([startLat, startLng], { draggable: true }).addTo(map);
+
+    function setCoords(lat, lng) {
+      if (latInput) latInput.value = lat.toFixed(6);
+      if (lngInput) lngInput.value = lng.toFixed(6);
+    }
+
+    function reverseGeocode(lat, lng) {
+      if (statusEl) statusEl.textContent = "Looking up address...";
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=14&addressdetails=1`)
+        .then((r) => r.json())
+        .then((data) => {
+          const addr = data.address || {};
+          const city = addr.city || addr.town || addr.village || addr.county || addr.state_district || "";
+          const country = addr.country || "";
+          if (city && locationInput) locationInput.value = city;
+          if (country && countryInput) countryInput.value = country;
+          if (statusEl) statusEl.textContent = data.display_name ? "Pinned: " + data.display_name : "Pin set.";
+        })
+        .catch(() => {
+          if (statusEl) statusEl.textContent = "Pin set. Couldn't look up the address name.";
+        });
+    }
+
+    marker.on("dragend", () => {
+      const pos = marker.getLatLng();
+      setCoords(pos.lat, pos.lng);
+      reverseGeocode(pos.lat, pos.lng);
+    });
+
+    map.on("click", (e) => {
+      marker.setLatLng(e.latlng);
+      setCoords(e.latlng.lat, e.latlng.lng);
+      reverseGeocode(e.latlng.lat, e.latlng.lng);
+    });
+
+    setCoords(startLat, startLng);
+
+    function doSearch() {
+      const q = searchInput.value.trim();
+      if (!q) return;
+      if (statusEl) statusEl.textContent = "Searching...";
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1&addressdetails=1`)
+        .then((r) => r.json())
+        .then((results) => {
+          if (!results.length) {
+            if (statusEl) statusEl.textContent = "No results found for that search.";
+            return;
+          }
+          const place = results[0];
+          const lat = Number(place.lat);
+          const lng = Number(place.lon);
+          map.setView([lat, lng], 14);
+          marker.setLatLng([lat, lng]);
+          setCoords(lat, lng);
+          const addr = place.address || {};
+          const city = addr.city || addr.town || addr.village || addr.county || "";
+          const country = addr.country || "";
+          if (city && locationInput) locationInput.value = city;
+          if (country && countryInput) countryInput.value = country;
+          if (statusEl) statusEl.textContent = "Pinned: " + place.display_name;
+        })
+        .catch(() => {
+          if (statusEl) statusEl.textContent = "Couldn't search right now.";
+        });
+    }
+
+    if (searchBtn && searchInput) {
+      searchBtn.addEventListener("click", doSearch);
+      searchInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          doSearch();
+        }
+      });
+    }
+
+    if (locateBtn) {
+      locateBtn.addEventListener("click", () => {
+        if (!navigator.geolocation) {
+          if (statusEl) statusEl.textContent = "Location isn't supported on this browser.";
+          return;
+        }
+        if (statusEl) statusEl.textContent = "Locating...";
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            map.setView([latitude, longitude], 15);
+            marker.setLatLng([latitude, longitude]);
+            setCoords(latitude, longitude);
+            reverseGeocode(latitude, longitude);
+          },
+          () => {
+            if (statusEl) statusEl.textContent = "Location access was denied.";
+          },
+          { timeout: 8000 },
+        );
+      });
+    }
+
+    // The map starts inside a hidden wizard step, so Leaflet measures a
+    // zero-size box at init. Recalculate once the step becomes visible.
+    document.querySelectorAll(".host-next, .host-back").forEach((btn) => {
+      btn.addEventListener("click", () => setTimeout(() => map.invalidateSize(), 50));
+    });
+  });
 })();

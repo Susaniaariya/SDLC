@@ -3,7 +3,10 @@
 <div class="row mt-3">
   <div class="col-10 offset-1 col-lg-8 offset-lg-2 listing-hero text-center">
     <h3><%= listing.title %></h3>
-    <p class="listing-meta"><i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>, <%= listing.country %></p>
+    <p class="listing-meta">
+      <% if (listing.propertyType) { %><span class="property-type-badge"><%= listing.propertyType %></span><% } %>
+      <i class="fa-solid fa-location-dot me-1"></i><%= listing.location %>, <%= listing.country %>
+    </p>
   </div>
 
   <div class="card col-10 offset-1 col-lg-6 offset-lg-3 show-card shadow-lg p-3 rounded-4 listing-card">
