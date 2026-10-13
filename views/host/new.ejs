@@ -1,0 +1,135 @@
+<% layout("layouts/boilerplate.ejs") %>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+  integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb"
+  crossorigin="anonymous"
+/>
+
+<div class="row mt-4 mb-5">
+  <div class="col-11 offset-lg-1 col-lg-10 offset-xl-2 col-xl-8">
+    <div class="form-panel host-wizard" id="hostForm" data-step-count="3">
+      <div class="host-wizard-progress">
+        <span class="host-step-dot is-active" data-step-dot="1"></span>
+        <span class="host-step-dot" data-step-dot="2"></span>
+        <span class="host-step-dot" data-step-dot="3"></span>
+      </div>
+
+      <form action="/listings" method="POST" novalidate class="needs-validation">
+        <!-- STEP 1: property type -->
+        <section class="host-step" data-step="1">
+          <h3>Which of these best describes your place?</h3>
+          <p class="section-lead mb-4">Pick the option that's the closest match.</p>
+
+          <div class="property-type-grid">
+            <label class="property-type-card">
+              <input type="radio" name="listing[propertyType]" value="House" checked />
+              <i class="fa-solid fa-house"></i>
+              <span>House</span>
+            </label>
+            <label class="property-type-card">
+              <input type="radio" name="listing[propertyType]" value="Apartment" />
+              <i class="fa-solid fa-building"></i>
+              <span>Apartment</span>
+            </label>
+            <label class="property-type-card">
+              <input type="radio" name="listing[propertyType]" value="Guesthouse" />
+              <i class="fa-solid fa-door-open"></i>
+              <span>Guesthouse</span>
+            </label>
+            <label class="property-type-card">
+              <input type="radio" name="listing[propertyType]" value="Hotel" />
+              <i class="fa-solid fa-hotel"></i>
+              <span>Hotel</span>
+            </label>
+            <label class="property-type-card">
+              <input type="radio" name="listing[propertyType]" value="Villa" />
+              <i class="fa-solid fa-umbrella-beach"></i>
+              <span>Villa</span>
+            </label>
+            <label class="property-type-card">
+              <input type="radio" name="listing[propertyType]" value="Cabin" />
+              <i class="fa-solid fa-campground"></i>
+              <span>Cabin</span>
+            </label>
+          </div>
+        </section>
+
+        <!-- STEP 2: location + map -->
+        <section class="host-step" data-step="2" hidden>
+          <h3>Where's your place located?</h3>
+          <p class="section-lead mb-4">Search an address, use your current location, or drag the pin to fine-tune it.</p>
+
+          <div class="map-search-row">
+            <input type="text" class="form-control map-search-input" placeholder="Search an address or city" />
+            <button type="button" class="btn btn-dark map-search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button type="button" class="btn btn-outline-dark map-locate-btn" title="Use my current location">
+              <i class="fa-solid fa-location-crosshairs"></i>
+            </button>
+          </div>
+
+          <div id="hostMap" class="host-map" data-lat="27.7172" data-lng="85.3240"></div>
+          <p class="map-status">Default pin set near Kathmandu &mdash; search or drag to adjust.</p>
+
+          <div class="row mt-3">
+            <div class="mb-3 col-md-6">
+              <label class="form-label">City / Location</label>
+              <input name="listing[location]" class="form-control map-location-input" placeholder="Kathmandu" required />
+              <div class="invalid-feedback">Location should be valid</div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label class="form-label">Country</label>
+              <input name="listing[country]" class="form-control map-country-input" placeholder="Nepal" required />
+              <div class="invalid-feedback">Country name should be valid</div>
+            </div>
+          </div>
+
+          <input type="hidden" name="listing[geo][lat]" class="map-lat-input" value="27.7172" />
+          <input type="hidden" name="listing[geo][lng]" class="map-lng-input" value="85.3240" />
+        </section>
+
+        <!-- STEP 3: details -->
+        <section class="host-step" data-step="3" hidden>
+          <h3>Tell us about your place</h3>
+          <p class="section-lead mb-4">A few details so travellers know what to expect.</p>
+
+          <div class="mb-3">
+            <label class="form-label">Title</label>
+            <input name="listing[title]" class="form-control" placeholder="Add a catchy title" required />
+            <div class="invalid-feedback">Please add a title</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea name="listing[description]" class="form-control" placeholder="Enter description" required></textarea>
+            <div class="invalid-feedback">Please enter a short description</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Image Link</label>
+            <input name="listing[image]" class="form-control" placeholder="Enter image URL/LINK" />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Price per night</label>
+            <input name="listing[price]" type="number" min="0" class="form-control" placeholder="1200" required />
+            <div class="invalid-feedback">Price should be valid</div>
+          </div>
+        </section>
+
+        <div class="host-wizard-actions">
+          <button type="button" class="btn btn-outline-dark host-back" hidden>Back</button>
+          <button type="button" class="btn btn-dark host-next ms-auto">Next</button>
+          <button type="submit" class="btn btn-dark add-btn host-submit ms-auto" hidden>Publish listing</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"
+  integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO"
+  crossorigin="anonymous"
+></script>

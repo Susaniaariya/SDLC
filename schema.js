@@ -7,6 +7,13 @@ module.exports.listingSchema = Joi.object({
     country: Joi.string().required(),
     price: Joi.number().required().min(0),
     image: Joi.string().allow("", null),
+    propertyType: Joi.string()
+      .valid("House", "Apartment", "Guesthouse", "Hotel", "Villa", "Cabin")
+      .allow("", null),
+    geo: Joi.object({
+      lat: Joi.number().allow("", null),
+      lng: Joi.number().allow("", null),
+    }).allow(null),
   }).required(),
 });
 module.exports.reviewSchema = Joi.object({

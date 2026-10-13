@@ -11,12 +11,15 @@ module.exports.signup = async (req, res, next) => {
     // Register user using method from passport-local-mongoose
     const registeredUser = await User.register(newUser, password);
     console.log(registeredUser);
+    // Captured before req.login(), which regenerates the session (Passport
+    // 0.6+ does this to prevent session fixation) and would otherwise wipe it.
+    const returnTo = req.session.returnTo;
     req.login(registeredUser, (err) => {
       if (err) {
         return next(err);
       }
       req.flash("success", "Welcome to YatraStay");
-      res.redirect("/listings");
+      res.redirect(returnTo || "/listings");
     });
   } catch (e) {
     req.flash("error", e.message);
@@ -39,15 +42,14 @@ module.exports.login = async (req, res, next) => {
     const result = await user.authenticate(password);
 
     if (result.user) {
+      // Captured before req.logIn(), which regenerates the session (Passport
+      // 0.6+ does this to prevent session fixation) and would otherwise wipe it.
+      const returnTo = req.session.returnTo;
       req.logIn(result.user, (err) => {
         if (err) return next(err);
 
         req.flash("success", "Welcome back to YatraStay!");
-
-        // Redirect to the saved URL or default to /listings
-        const redirectUrl = req.session.returnTo || "/listings";
-        delete req.session.returnTo; // Clean up session
-        return res.redirect(redirectUrl);
+        return res.redirect(returnTo || "/listings");
       });
     } else {
       req.flash("error", "Invalid username or password.");
