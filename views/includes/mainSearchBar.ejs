@@ -1,0 +1,46 @@
+<!--
+  Airbnb-style "Where / When / Who" search bar.
+  Expects locals: location, checkin, checkout, guests (all optional strings).
+  Submits GET /listings with query params: location, checkin, checkout, guests.
+-->
+<form class="main-search-bar" action="/listings" method="GET">
+  <div class="search-pill-section where">
+    <label>Where</label>
+    <input
+      type="text"
+      name="location"
+      value="<%= location %>"
+      placeholder="Search destinations"
+      autocomplete="off"
+    />
+  </div>
+
+  <div class="search-pill-divider"></div>
+
+  <div class="search-pill-section when" data-checkin="<%= checkin %>" data-checkout="<%= checkout %>">
+    <label>When</label>
+    <div class="when-trigger">
+      <input type="text" class="when-display-input" placeholder="Add dates" readonly autocomplete="off" />
+      <i class="fa-regular fa-calendar when-icon"></i>
+    </div>
+    <input type="hidden" name="checkin" class="checkin-input" value="<%= checkin %>" />
+    <input type="hidden" name="checkout" class="checkout-input" value="<%= checkout %>" />
+  </div>
+
+  <div class="search-pill-divider"></div>
+
+  <div class="search-pill-section who">
+    <label>Who</label>
+    <input
+      type="number"
+      name="guests"
+      min="1"
+      value="<%= guests %>"
+      placeholder="Add guests"
+    />
+  </div>
+
+  <button type="submit" class="main-search-btn" aria-label="Search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+</form>

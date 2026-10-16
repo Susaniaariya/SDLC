@@ -3,7 +3,18 @@ const Listing = require("../models/listing");
 const PRICE_SLIDER_MAX = 20000;
 
 module.exports.index = async (req, res) => {
-  const search = (req.query.search || "").trim();
+  // "location" is the Where/When/Who search bar's field; "search" is the
+  // navbar's compact search. Both feed the same text match.
+  const search = (req.query.search || req.query.location || "").trim();
+
+  // Check-in/check-out are accepted and echoed back into the form, but there
+  // is no booking/availability data in this app yet, so they are not
+  // filtered on - only guests and price are real filters for now.
+  const checkin = req.query.checkin || "";
+  const checkout = req.query.checkout || "";
+
+  let guests = Number(req.query.guests);
+  if (!Number.isFinite(guests) || guests < 1) guests = null;
 
   let minPrice = Number(req.query.minPrice);
   let maxPrice = Number(req.query.maxPrice);
@@ -20,6 +31,9 @@ module.exports.index = async (req, res) => {
     if (minPrice > 0) filter.price.$gte = minPrice;
     if (maxPrice < PRICE_SLIDER_MAX) filter.price.$lte = maxPrice;
   }
+  if (guests) {
+    filter.maxGuests = { $gte: guests };
+  }
 
   const allListings = await Listing.find(filter);
   res.render("listings/index", {
@@ -28,6 +42,9 @@ module.exports.index = async (req, res) => {
     minPrice,
     maxPrice,
     sliderMax: PRICE_SLIDER_MAX,
+    checkin,
+    checkout,
+    guests: guests || "",
   });
 };
 module.exports.renderNewForm = (req, res) => {

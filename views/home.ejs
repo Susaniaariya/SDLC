@@ -1,11 +1,28 @@
 <% layout("layouts/boilerplate.ejs") %>
 
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css"
+  integrity="sha384-RkASv+6KfBMW9eknReJIJ6b3UnjKOKC5bOUaNgIY778NFbQ8MtWq9Lr/khUgqtTt"
+  crossorigin="anonymous"
+/>
+
 <!-- HERO -->
 <section class="home-hero" style="background-image: url('/images/heritage/heroimage.jpg');">
   <div class="home-hero-overlay">
     <span class="home-eyebrow"><i class="fa-solid fa-dharmachakra me-2"></i>Southeast Asia &amp; beyond</span>
     <h1>Stay where history lives.</h1>
     <p>YatraStay connects travellers with welcoming hosts across Southeast Asia &mdash; from temple towns and ancient trading ports to quiet mountain villages.</p>
+
+    <div class="search-bar-group">
+      <div class="search-bar-sentinel"></div>
+      <div class="search-bar-home-slot">
+        <div class="search-bar-pin">
+          <%- include("includes/mainSearchBar", { location: "", checkin: "", checkout: "", guests: "" }) %>
+        </div>
+      </div>
+    </div>
+
     <div class="home-hero-actions">
       <a href="/listings" class="btn btn-light btn-lg">Explore stays</a>
       <a href="/listings/new" class="btn btn-outline-light btn-lg">Host your place</a>
@@ -156,3 +173,9 @@
   <p>Become a YatraStay host and welcome travellers to your part of the world.</p>
   <a href="/listings/new" class="btn btn-light btn-lg">List your place</a>
 </section>
+
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"
+  integrity="sha384-5JqMv4L/Xa0hfvtF06qboNdhvuYXUku9ZrhZh3bSk8VXF0A/RuSLHpLsSV9Zqhl6"
+  crossorigin="anonymous"
+></script>

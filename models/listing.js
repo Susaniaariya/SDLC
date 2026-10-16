@@ -30,6 +30,11 @@ const listingSchema = new Schema({
     lat: Number,
     lng: Number,
   },
+  maxGuests: {
+    type: Number,
+    default: 2,
+    min: 1,
+  },
   reviews: [
     {
       type: Schema.Types.ObjectId,

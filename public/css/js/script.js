@@ -393,4 +393,99 @@
       btn.addEventListener("click", () => setTimeout(() => map.invalidateSize(), 50));
     });
   });
+
+  // Search bar: a single instance that physically relocates into the
+  // navbar once the user scrolls past it, and moves back when scrolled
+  // back up - no duplicate bar, no separate condensed button.
+  document.querySelectorAll(".search-bar-group").forEach((group) => {
+    const sentinel = group.querySelector(".search-bar-sentinel");
+    const homeSlot = group.querySelector(".search-bar-home-slot");
+    const pin = group.querySelector(".search-bar-pin");
+    const navTarget = document.querySelector(".navbar-search-target");
+    if (!sentinel || !homeSlot || !pin || !navTarget || !("IntersectionObserver" in window)) return;
+
+    const DESKTOP_BREAKPOINT = 992; // matches Bootstrap's navbar-expand-lg
+
+    function relocate(destination) {
+      if (pin.parentElement === destination) return;
+      pin.style.transition = "none";
+      pin.style.opacity = "0";
+      destination.appendChild(pin);
+      void pin.offsetWidth; // force reflow so the opacity:0 actually applies first
+      requestAnimationFrame(() => {
+        pin.style.transition = "";
+        pin.style.opacity = "1";
+      });
+    }
+
+    function moveToNav() {
+      if (window.innerWidth < DESKTOP_BREAKPOINT) return;
+      relocate(navTarget);
+    }
+
+    function moveHome() {
+      relocate(homeSlot);
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          moveHome();
+        } else {
+          moveToNav();
+        }
+      },
+      { threshold: 0, rootMargin: "-80px 0px 0px 0px" },
+    );
+    observer.observe(sentinel);
+
+    // On a narrow viewport the navbar is collapsed behind the hamburger
+    // menu, so don't leave the bar stranded there if the window shrinks.
+    window.addEventListener("resize", () => {
+      if (window.innerWidth < DESKTOP_BREAKPOINT && pin.parentElement === navTarget) {
+        moveHome();
+      }
+    });
+  });
+
+  // "When" field: Flatpickr date-range picker feeding hidden checkin/checkout inputs
+  document.querySelectorAll(".search-pill-section.when").forEach((section) => {
+    if (typeof flatpickr === "undefined") return;
+
+    const displayInput = section.querySelector(".when-display-input");
+    const checkinInput = section.querySelector(".checkin-input");
+    const checkoutInput = section.querySelector(".checkout-input");
+    if (!displayInput || !checkinInput || !checkoutInput) return;
+
+    const toISO = (date) => {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    };
+
+    const initialCheckin = section.dataset.checkin || "";
+    const initialCheckout = section.dataset.checkout || "";
+    const defaultDate = [initialCheckin, initialCheckout].filter(Boolean);
+
+    const fp = flatpickr(displayInput, {
+      mode: "range",
+      dateFormat: "Y-m-d",
+      altInput: true,
+      altInputClass: "when-display-input",
+      altFormat: "M j",
+      minDate: "today",
+      defaultDate: defaultDate.length ? defaultDate : undefined,
+      showMonths: window.innerWidth < 640 ? 1 : 2,
+      onChange: (selectedDates) => {
+        checkinInput.value = selectedDates[0] ? toISO(selectedDates[0]) : "";
+        checkoutInput.value = selectedDates[1] ? toISO(selectedDates[1]) : "";
+      },
+    });
+
+    const trigger = section.querySelector(".when-trigger");
+    if (trigger) {
+      trigger.addEventListener("click", () => fp.open());
+    }
+  });
 })();

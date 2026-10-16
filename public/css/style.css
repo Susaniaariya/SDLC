@@ -109,16 +109,43 @@ h1, h2, h3, h4, h5, h6 {
   font-size: 1.9rem;
 }
 
-.navbar-search-wrap {
-  margin: 0.5rem 0;
-  max-width: 420px;
-  width: 100%;
+/* Landing spot inside the navbar for the page's search bar. Empty and
+   zero-width until JS relocates the real .search-bar-pin element here on
+   scroll, so it takes up no space otherwise. */
+.navbar-search-target {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 1 auto;
 }
 
-@media (min-width: 992px) {
-  .navbar-search-wrap {
-    margin: 0 1rem;
-  }
+.navbar-search-target:empty {
+  flex: 0 0 0;
+}
+
+.navbar-search-target .main-search-bar {
+  width: auto;
+  max-width: 420px;
+  margin: 0 1rem;
+  padding: 0.2rem;
+}
+
+.navbar-search-target .search-pill-section {
+  padding: 0.3rem 0.85rem;
+}
+
+.navbar-search-target .search-pill-section label {
+  font-size: 0.6rem;
+}
+
+.navbar-search-target .search-pill-section input {
+  font-size: 0.78rem;
+}
+
+.navbar-search-target .main-search-btn {
+  width: 2.3rem;
+  height: 2.3rem;
+  font-size: 0.85rem;
 }
 
 /* ==========================================================================
@@ -1285,4 +1312,218 @@ footer {
   margin-top: 1.75rem;
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
+}
+
+/* ==========================================================================
+   Main search bar (Where / When / Who)
+   ========================================================================== */
+.main-search-bar {
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border-radius: 999px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  padding: 0.4rem;
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+.search-pill-section {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.5rem 1.5rem;
+  min-width: 0;
+  border-radius: 999px;
+  transition: background var(--transition);
+}
+
+.search-pill-section:focus-within {
+  background: var(--surface-alt);
+}
+
+.search-pill-section label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  margin-bottom: 0.15rem;
+}
+
+.search-pill-section input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.85rem;
+  color: var(--ink);
+  padding: 0;
+  width: 100%;
+}
+
+.search-pill-section input::placeholder {
+  color: var(--ink-faint);
+}
+
+.when-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.when-display-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.when-icon {
+  flex-shrink: 0;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.search-pill-divider {
+  width: 1px;
+  background: var(--border);
+  margin: 0.4rem 0;
+  flex-shrink: 0;
+}
+
+.main-search-btn {
+  flex-shrink: 0;
+  width: 3rem;
+  height: 3rem;
+  align-self: center;
+  margin-left: 0.25rem;
+  border-radius: 50%;
+  border: none;
+  background: var(--brand);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.main-search-btn:hover {
+  background: var(--brand-dark);
+  transform: scale(1.05);
+}
+
+.home-hero .main-search-bar {
+  margin: 1.5rem 0 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .main-search-bar {
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+    max-width: 100%;
+    padding: 0.5rem;
+  }
+
+  .search-pill-divider {
+    width: auto;
+    height: 1px;
+    margin: 0 0.75rem;
+  }
+
+  .search-pill-section {
+    padding: 0.65rem 1rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .main-search-btn {
+    width: 100%;
+    height: 2.75rem;
+    border-radius: var(--radius-sm);
+    margin: 0.5rem 0 0;
+  }
+}
+
+/* ==========================================================================
+   Search bar: single instance, relocated into the navbar on scroll
+   ========================================================================== */
+.search-bar-sentinel {
+  height: 1px;
+}
+
+.search-bar-home-slot {
+  min-height: 1px;
+}
+
+.search-bar-pin {
+  transition: opacity 200ms ease;
+}
+
+/* ==========================================================================
+   Flatpickr theme overrides (date range picker for the "When" field)
+   ========================================================================== */
+.flatpickr-calendar {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+
+.flatpickr-calendar.arrowTop:before,
+.flatpickr-calendar.arrowTop:after {
+  display: none;
+}
+
+.flatpickr-months {
+  padding: 0.5rem 0.25rem 0;
+}
+
+.flatpickr-current-month {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.flatpickr-day {
+  border-radius: 999px;
+  color: var(--ink);
+}
+
+.flatpickr-day.today {
+  border-color: var(--brand);
+}
+
+.flatpickr-day:hover,
+.flatpickr-day:focus {
+  background: var(--brand-soft);
+  border-color: var(--brand-soft);
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+
+.flatpickr-day.inRange {
+  background: var(--brand-soft);
+  border-color: var(--brand-soft);
+  box-shadow: -5px 0 0 var(--brand-soft), 5px 0 0 var(--brand-soft);
+}
+
+.flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n+1)),
+.flatpickr-day.startRange.nextMonthDay.selected.startRange + .endRange:not(:nth-child(7n+1)) {
+  box-shadow: -10px 0 0 var(--brand);
+}
+
+.flatpickr-weekday {
+  font-weight: 700;
+  color: var(--ink-faint);
+  font-size: 0.72rem;
+  text-transform: uppercase;
 }

@@ -13,9 +13,9 @@
         <a class="nav-link" href="/listings">All Listings</a>
       </div>
 
-      <div class="navbar-search-wrap">
-        <%- include("searchFilter", { search: "", minPrice: 0, maxPrice: 20000, sliderMax: 20000 }) %>
-      </div>
+      <!-- Landing spot for the page's Where/When/Who search bar, which JS
+           relocates here once the user scrolls past it. Empty otherwise. -->
+      <div class="navbar-search-target"></div>
 
       <div class="navbar-nav ms-auto align-items-lg-center">
         <a class="nav-link nav-cta nav-cta-ghost host-cta" href="/host"><i class="fa-solid fa-house-chimney-window me-1"></i>Host your home</a>

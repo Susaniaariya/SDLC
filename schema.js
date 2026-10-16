@@ -14,6 +14,7 @@ module.exports.listingSchema = Joi.object({
       lat: Joi.number().allow("", null),
       lng: Joi.number().allow("", null),
     }).allow(null),
+    maxGuests: Joi.number().integer().min(1).allow("", null),
   }).required(),
 });
 module.exports.reviewSchema = Joi.object({
