@@ -28,7 +28,13 @@ module.exports.isOwner = async (req, res, next) => {
   const listing = await Listing.findById(id).populate("owner");
   const currUser = res.locals.currUser; // get the logged-in user
 
-  if (!currUser || !listing.owner._id.equals(currUser._id)) {
+  // Listing was deleted or the id is wrong: don't crash, send them back.
+  if (!listing) {
+    req.flash("error", "That listing doesn't exist.");
+    return res.redirect("/listings");
+  }
+
+  if (!currUser || !listing.owner || !listing.owner._id.equals(currUser._id)) {
     req.flash("error", "You are not the owner of this listing");
     return res.redirect(`/listings/${id}`);
   }
@@ -49,7 +55,13 @@ module.exports.isReviewAuthor = async (req, res, next) => {
   const review = await Review.findById(reviewId).populate("author");
   const currUser = req.user;
 
-  if (!review.author.equals(currUser._id)) {
+  // Review was already deleted or the id is wrong: don't crash.
+  if (!review) {
+    req.flash("error", "That review doesn't exist.");
+    return res.redirect(`/listings/${id}`);
+  }
+
+  if (!review.author || !review.author.equals(currUser._id)) {
     req.flash("error", "You are not the author of this review");
     return res.redirect(`/listings/${id}`);
   }

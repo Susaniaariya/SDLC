@@ -9,6 +9,7 @@ const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const hostRouter = require("./routes/host.js");
+const bookingRouter = require("./routes/booking.js");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
@@ -76,6 +77,9 @@ app.use("/listings", listingRouter);
 
 // Review routes
 app.use("/listings", reviewRouter);
+
+// Booking routes
+app.use("/listings", bookingRouter);
 
 // Host routes
 app.use("/host", hostRouter);
