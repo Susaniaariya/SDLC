@@ -4,6 +4,9 @@ const Listing = require("../models/listing");
 const ONE_DAY = 24 * 60 * 60 * 1000;
 const DATE_FORMAT = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD, what a date input sends
 
+// How many hours before check-in cancellation is still allowed.
+const CANCEL_CUTOFF_HOURS = Number(process.env.CANCEL_CUTOFF_HOURS) || 48;
+
 // POST /listings/:id/bookings
 // Expects req.body.booking = { checkIn, checkOut, guests }
 module.exports.createBooking = async (req, res) => {
@@ -96,6 +99,15 @@ module.exports.cancelBooking = async (req, res) => {
   }
   if (booking.status === "cancelled") {
     req.flash("error", "This booking is already cancelled.");
+    return res.redirect(back);
+  }
+
+  const cutoff = new Date(booking.checkIn) - CANCEL_CUTOFF_HOURS * 60 * 60 * 1000;
+  if (Date.now() > cutoff) {
+    req.flash(
+      "error",
+      `Cancellations must be made at least ${CANCEL_CUTOFF_HOURS} hours before check-in.`
+    );
     return res.redirect(back);
   }
 

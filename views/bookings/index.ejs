@@ -4,6 +4,15 @@
   const money = (n) => "रु " + Number(n || 0).toLocaleString("en-NP");
   const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
   const nightsOf = (b) => Math.round((new Date(b.checkOut) - new Date(b.checkIn)) / 86400000);
+  const CUTOFF_HOURS = 48;
+  const canCancel = (b) => {
+    const cutoff = new Date(b.checkIn).getTime() - CUTOFF_HOURS * 60 * 60 * 1000;
+    return Date.now() < cutoff;
+  };
+  const cancelDeadline = (b) => {
+    const d = new Date(new Date(b.checkIn).getTime() - CUTOFF_HOURS * 60 * 60 * 1000);
+    return d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+  };
 %>
 
 <div class="mt-4 mb-5">
@@ -33,9 +42,19 @@
               <p class="trip-dates mb-1"><%= fmtDay(b.checkIn) %> &rarr; <%= fmtDay(b.checkOut) %></p>
               <p class="small text-muted mb-2"><%= nightsOf(b) %> night<%= nightsOf(b) > 1 ? "s" : "" %> · <%= b.guests %> guest<%= b.guests > 1 ? "s" : "" %> · <strong><%= money(b.totalPrice) %></strong></p>
               <% if (b.listing && new Date(b.checkIn) > todayStart) { %>
-                <form method="POST" action="/listings/<%= b.listing ? b.listing._id : b.listing %>/bookings/<%= b._id %>/cancel?_method=PATCH&from=trips" onsubmit="return confirm('Cancel this booking?');">
-                  <button class="btn btn-sm btn-outline-dark"><i class="fa-solid fa-xmark me-1"></i>Cancel booking</button>
-                </form>
+                <% if (canCancel(b)) { %>
+                  <p class="small text-muted mb-2">
+                    <i class="fa-regular fa-clock me-1"></i>Cancel by <strong><%= cancelDeadline(b) %></strong>
+                  </p>
+                  <form method="POST" action="/listings/<%= b.listing._id %>/bookings/<%= b._id %>/cancel?from=trips" onsubmit="return confirm('Cancel this booking? This cannot be undone.');">
+                    <input type="hidden" name="_method" value="PATCH">
+                    <button class="btn btn-sm btn-outline-danger"><i class="fa-solid fa-xmark me-1"></i>Cancel booking</button>
+                  </form>
+                <% } else { %>
+                  <p class="small text-muted mb-0">
+                    <i class="fa-solid fa-lock me-1"></i>Cancellation window closed &mdash; check-in is within <%= CUTOFF_HOURS %>h.
+                  </p>
+                <% } %>
               <% } else { %>
                 <p class="small text-muted mb-0"><i class="fa-solid fa-person-walking-luggage me-1"></i>You're staying here now.</p>
               <% } %>
