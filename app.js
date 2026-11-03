@@ -1,9 +1,12 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const ExpressError = require("./utils/ExpressError.js");
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -15,15 +18,46 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const User = require("./models/user.js"); // Ensure this path is correct
+const User = require("./models/user.js");
 
-const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/MyNewProject"; // Ensure this matches your MongoDB setup
+const MONGO_URL = process.env.MONGO_URL;
+if (!MONGO_URL) throw new Error("MONGO_URL is not set in environment");
 
 // --- Connect to MongoDB ---
 mongoose
   .connect(MONGO_URL)
   .then(() => console.log("Connected to DB"))
   .catch((err) => console.log("DB Connection Error:", err));
+
+// --- Security headers ---
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+          "https://fonts.googleapis.com",
+        ],
+        fontSrc: [
+          "'self'",
+          "https://fonts.gstatic.com",
+          "https://cdnjs.cloudflare.com",
+        ],
+        imgSrc: ["'self'", "data:", "https://res.cloudinary.com", "https://images.unsplash.com", "https://upload.wikimedia.org"],
+        connectSrc: ["'self'"],
+      },
+    },
+  })
+);
 
 // --- App configuration ---
 app.engine("ejs", ejsMate);
@@ -37,7 +71,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(
   session({
-    secret: "your-secret",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
