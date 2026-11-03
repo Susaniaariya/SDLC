@@ -1,0 +1,69 @@
+<% layout("layouts/boilerplate") %>
+<%
+  const fmtDay = (d) => new Date(d).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const money = (n) => "रु " + Number(n || 0).toLocaleString("en-NP");
+  const todayStart = new Date(new Date().setHours(0, 0, 0, 0));
+  const nightsOf = (b) => Math.round((new Date(b.checkOut) - new Date(b.checkIn)) / 86400000);
+%>
+
+<div class="mt-4 mb-5">
+  <h2 class="mb-1">My trips</h2>
+  <p class="listing-meta mb-4">Your upcoming stays and booking history.</p>
+
+  <h4 class="mb-3">Upcoming</h4>
+  <% if (!upcoming.length) { %>
+    <div class="booking-card mb-4">
+      <p class="mb-2">No upcoming trips yet.</p>
+      <a href="/listings" class="btn btn-brand">Find a place to stay</a>
+    </div>
+  <% } else { %>
+    <div class="row g-3 mb-5">
+      <% for (const b of upcoming) { %>
+        <div class="col-md-6 col-lg-4">
+          <div class="trip-card">
+            <% if (b.listing) { %>
+              <a href="/listings/<%= b.listing._id %>"><img src="<%= b.listing.image && b.listing.image.url %>" alt="<%= b.listing.title %>" /></a>
+            <% } %>
+            <div class="card-body">
+              <span class="trip-status trip-status-confirmed">Confirmed</span>
+              <h5 class="mt-2 mb-1">
+                <% if (b.listing) { %><a href="/listings/<%= b.listing._id %>" class="text-reset text-decoration-none"><%= b.listing.title %></a><% } else { %>Listing removed<% } %>
+              </h5>
+              <% if (b.listing) { %><p class="listing-meta small mb-2"><i class="fa-solid fa-location-dot me-1"></i><%= b.listing.location %>, <%= b.listing.country %></p><% } %>
+              <p class="trip-dates mb-1"><%= fmtDay(b.checkIn) %> &rarr; <%= fmtDay(b.checkOut) %></p>
+              <p class="small text-muted mb-2"><%= nightsOf(b) %> night<%= nightsOf(b) > 1 ? "s" : "" %> · <%= b.guests %> guest<%= b.guests > 1 ? "s" : "" %> · <strong><%= money(b.totalPrice) %></strong></p>
+              <% if (b.listing && new Date(b.checkIn) > todayStart) { %>
+                <form method="POST" action="/listings/<%= b.listing ? b.listing._id : b.listing %>/bookings/<%= b._id %>/cancel?_method=PATCH&from=trips" onsubmit="return confirm('Cancel this booking?');">
+                  <button class="btn btn-sm btn-outline-dark"><i class="fa-solid fa-xmark me-1"></i>Cancel booking</button>
+                </form>
+              <% } else { %>
+                <p class="small text-muted mb-0"><i class="fa-solid fa-person-walking-luggage me-1"></i>You're staying here now.</p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+
+  <% if (past.length) { %>
+    <h4 class="mb-3">Past &amp; cancelled</h4>
+    <div class="row g-3">
+      <% for (const b of past) { %>
+        <% const status = b.status === "cancelled" ? "cancelled" : "completed"; %>
+        <div class="col-md-6 col-lg-4">
+          <div class="trip-card is-past">
+            <div class="card-body">
+              <span class="trip-status trip-status-<%= status %>"><%= status %></span>
+              <h5 class="mt-2 mb-1">
+                <% if (b.listing) { %><a href="/listings/<%= b.listing._id %>" class="text-reset text-decoration-none"><%= b.listing.title %></a><% } else { %>Listing removed<% } %>
+              </h5>
+              <p class="trip-dates mb-1"><%= fmtDay(b.checkIn) %> &rarr; <%= fmtDay(b.checkOut) %></p>
+              <p class="small text-muted mb-0"><%= nightsOf(b) %> night<%= nightsOf(b) > 1 ? "s" : "" %> · <%= money(b.totalPrice) %></p>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

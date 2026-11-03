@@ -1,4 +1,5 @@
 const Listing = require("../models/listing");
+const Booking = require("../models/booking");
 
 const PRICE_SLIDER_MAX = 20000;
 
@@ -47,8 +48,17 @@ module.exports.showListing = async (req, res) => {
     req.flash("error", "Listing you requested for does not exist");
     return res.redirect("/listings");
   }
-  console.log(listing.owner);
-  res.render("listings/show.ejs", { listing });
+  // Upcoming confirmed stays, so guests can see which dates are taken
+  const now = new Date();
+  const bookedRanges = await Booking.find({
+    listing: listing._id,
+    status: "confirmed",
+    checkOut: { $gt: now },
+  })
+    .select("checkIn checkOut")
+    .sort({ checkIn: 1 })
+    .lean();
+  res.render("listings/show.ejs", { listing, bookedRanges });
 };
 
 module.exports.createListing = async (req, res) => {

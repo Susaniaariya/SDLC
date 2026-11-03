@@ -43,7 +43,9 @@ const listingSchema = new Schema({
 });
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {
-    await Review.deleteMany({ reviews: { $in: listing.reviews } });
+    await Review.deleteMany({ _id: { $in: listing.reviews } });
+    // Required here (not at the top) to avoid a circular require with booking.js
+    await mongoose.model("Booking").deleteMany({ listing: listing._id });
   }
 });
 const Listing = mongoose.model("Listing", listingSchema);

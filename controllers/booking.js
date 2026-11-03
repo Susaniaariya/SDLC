@@ -83,22 +83,43 @@ module.exports.createBooking = async (req, res) => {
 module.exports.cancelBooking = async (req, res) => {
   const { id, bookingId } = req.params;
   const booking = await Booking.findById(bookingId);
+  // Go back to wherever the guest clicked Cancel (My Trips or the listing).
+  const back = (req.query && req.query.from) === "trips" ? "/trips" : `/listings/${id}`;
 
   if (!booking) {
     req.flash("error", "That booking doesn't exist.");
-    return res.redirect(`/listings/${id}`);
+    return res.redirect(back);
   }
   if (!booking.guest.equals(req.user._id)) {
     req.flash("error", "You can only cancel your own bookings.");
-    return res.redirect(`/listings/${id}`);
+    return res.redirect(back);
   }
   if (booking.status === "cancelled") {
     req.flash("error", "This booking is already cancelled.");
-    return res.redirect(`/listings/${id}`);
+    return res.redirect(back);
   }
 
   booking.status = "cancelled";
   await booking.save();
   req.flash("success", "Your booking has been cancelled.");
-  res.redirect(`/listings/${id}`);
+  res.redirect(back);
+};
+
+// GET /trips
+// The logged-in guest's bookings: upcoming stays first, then past/cancelled.
+module.exports.myTrips = async (req, res) => {
+  const bookings = await Booking.find({ guest: req.user._id })
+    .populate("listing")
+    .sort({ checkIn: 1 });
+
+  const today = new Date(new Date().toLocaleDateString("en-CA")); // midnight today
+  const upcoming = [];
+  const past = [];
+  for (const b of bookings) {
+    if (b.status === "confirmed" && b.checkOut > today) upcoming.push(b);
+    else past.push(b);
+  }
+  past.reverse(); // most recent first
+
+  res.render("bookings/index.ejs", { upcoming, past });
 };

@@ -10,13 +10,14 @@ const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
 const hostRouter = require("./routes/host.js");
 const bookingRouter = require("./routes/booking.js");
+const tripsRouter = require("./routes/trips.js");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user.js"); // Ensure this path is correct
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/MyNewProject"; // Ensure this matches your MongoDB setup
+const MONGO_URL = process.env.MONGO_URL || "mongodb://127.0.0.1:27017/MyNewProject"; // Ensure this matches your MongoDB setup
 
 // --- Connect to MongoDB ---
 mongoose
@@ -80,6 +81,7 @@ app.use("/listings", reviewRouter);
 
 // Booking routes
 app.use("/listings", bookingRouter);
+app.use("/trips", tripsRouter);
 
 // Host routes
 app.use("/host", hostRouter);

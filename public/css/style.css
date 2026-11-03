@@ -1286,3 +1286,88 @@ footer {
   padding-top: 1.25rem;
   border-top: 1px solid var(--border);
 }
+
+/* ==========================================================================
+   Bookings
+   ========================================================================== */
+.btn-brand {
+  background-color: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition);
+}
+.btn-brand:hover,
+.btn-brand:focus {
+  background-color: var(--brand-dark);
+  border-color: var(--brand-dark);
+  color: #fff;
+}
+
+.booking-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-alt);
+  padding: 1.1rem 1.2rem;
+  box-shadow: var(--shadow-sm);
+  scroll-margin-top: 90px;
+}
+.booking-title {
+  font-size: 1.15rem;
+  margin-bottom: 0.75rem;
+}
+.booking-total {
+  color: var(--ink-soft);
+}
+.booking-total strong {
+  color: var(--ink);
+}
+.booked-dates {
+  border-top: 1px dashed var(--border);
+  padding-top: 0.75rem;
+}
+
+.trip-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background: var(--surface);
+  height: 100%;
+}
+.trip-card img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+}
+.trip-card .card-body {
+  padding: 1rem 1.1rem;
+}
+.trip-dates {
+  font-weight: 600;
+}
+.trip-status {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.trip-status-confirmed {
+  background: var(--gold-soft);
+  color: var(--gold-dark);
+}
+.trip-status-cancelled {
+  background: var(--surface-alt);
+  color: var(--ink-faint);
+}
+.trip-status-completed {
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+.trip-card.is-past {
+  opacity: 0.85;
+}
