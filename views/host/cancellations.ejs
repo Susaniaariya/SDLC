@@ -1,0 +1,67 @@
+<% layout("layouts/boilerplate.ejs") %>
+<%
+  const fmtDay = (d) => new Date(d).toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  const fmtDate = (d) => new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+  const money = (n) => "रु " + Number(n || 0).toLocaleString("en-NP");
+%>
+
+<div class="mt-4 mb-5">
+  <span class="section-eyebrow"><i class="fa-solid fa-house-chimney-window"></i>Host dashboard</span>
+  <h2 class="mb-1">Cancellation requests</h2>
+  <p class="listing-meta mb-4">Review and approve or deny your guests' cancellation requests.</p>
+
+  <% if (!pending || pending.length === 0) { %>
+    <div class="empty-state">
+      <i class="fa-regular fa-circle-check"></i>
+      <h5>No pending requests</h5>
+      <p>You're all clear — no guests are requesting cancellations right now.</p>
+    </div>
+  <% } else { %>
+    <div class="row g-4">
+      <% for (const b of pending) { %>
+        <div class="col-lg-6">
+          <div class="cancel-review-card">
+
+            <div class="d-flex gap-3 align-items-start mb-3">
+              <% if (b.listing && b.listing.image) { %>
+                <img src="<%= b.listing.image.url %>" alt="<%= b.listing.title %>" class="cancel-review-thumb">
+              <% } %>
+              <div>
+                <h5 class="mb-0"><%= b.listing ? b.listing.title : "Listing removed" %></h5>
+                <% if (b.listing) { %>
+                  <p class="listing-meta small mb-0"><i class="fa-solid fa-location-dot me-1"></i><%= b.listing.location %>, <%= b.listing.country %></p>
+                <% } %>
+              </div>
+            </div>
+
+            <div class="cancel-review-meta mb-3">
+              <div><i class="fa-solid fa-user me-2 text-muted"></i><strong>Guest:</strong> <%= b.guest ? b.guest.username : "Unknown" %></div>
+              <div><i class="fa-regular fa-calendar me-2 text-muted"></i><strong>Dates:</strong> <%= fmtDay(b.checkIn) %> &rarr; <%= fmtDay(b.checkOut) %></div>
+              <div><i class="fa-solid fa-sack-dollar me-2 text-muted"></i><strong>Total:</strong> <%= money(b.totalPrice) %></div>
+              <% if (b.cancelRequestedAt) { %>
+                <div><i class="fa-regular fa-clock me-2 text-muted"></i><strong>Requested:</strong> <%= fmtDate(b.cancelRequestedAt) %></div>
+              <% } %>
+            </div>
+
+            <div class="cancel-reason-box mb-3">
+              <div class="small fw-semibold mb-1"><i class="fa-solid fa-comment me-1"></i>Guest's reason</div>
+              <p class="mb-0"><%= b.cancellationReason %></p>
+            </div>
+
+            <div class="d-flex gap-2">
+              <form method="POST" action="/listings/<%= b.listing ? b.listing._id : b.listing %>/bookings/<%= b._id %>/approve-cancel" onsubmit="return confirm('Approve this cancellation? The booking will be cancelled.');">
+                <input type="hidden" name="_method" value="PATCH">
+                <button class="btn btn-sm btn-danger"><i class="fa-solid fa-check me-1"></i>Approve cancellation</button>
+              </form>
+              <form method="POST" action="/listings/<%= b.listing ? b.listing._id : b.listing %>/bookings/<%= b._id %>/deny-cancel" onsubmit="return confirm('Deny this request? The booking will remain confirmed.');">
+                <input type="hidden" name="_method" value="PATCH">
+                <button class="btn btn-sm btn-outline-dark"><i class="fa-solid fa-xmark me-1"></i>Deny request</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      <% } %>
+    </div>
+  <% } %>
+</div>

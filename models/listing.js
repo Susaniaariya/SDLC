@@ -7,17 +7,20 @@ const listingSchema = new Schema({
     required: true,
   },
   description: String,
+  // Legacy single-image field kept for backward compatibility with old documents.
   image: {
-    filename: {
-      type: String,
-      default: "listingimage",
-    },
+    filename: { type: String, default: "listingimage" },
     url: {
       type: String,
-      default:
-        "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGdvYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
+      default: "https://images.unsplash.com/photo-1625505826533-5c80aca7d157?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGdvYXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
     },
   },
+  images: [
+    {
+      url: { type: String, required: true },
+      filename: { type: String, required: true },
+    },
+  ],
   price: Number,
   location: String,
   country: String,
@@ -43,7 +46,9 @@ const listingSchema = new Schema({
 });
 listingSchema.post("findOneAndDelete", async (listing) => {
   if (listing) {
-    await Review.deleteMany({ reviews: { $in: listing.reviews } });
+    await Review.deleteMany({ _id: { $in: listing.reviews } });
+    // Required here (not at the top) to avoid a circular require with booking.js
+    await mongoose.model("Booking").deleteMany({ listing: listing._id });
   }
 });
 const Listing = mongoose.model("Listing", listingSchema);

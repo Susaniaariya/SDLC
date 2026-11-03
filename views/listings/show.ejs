@@ -10,11 +10,31 @@
   </div>
 
   <div class="card col-10 offset-1 col-lg-6 offset-lg-3 show-card shadow-lg p-3 rounded-4 listing-card">
-    <img
-      src="<%= listing.image.url %>"
-      class="card-img-top show-img rounded-4"
-      alt="listing_image"
-    />
+    <% const photos = (listing.images && listing.images.length) ? listing.images : (listing.image && listing.image.url ? [{ url: listing.image.url }] : []); %>
+    <% if (photos.length > 1) { %>
+      <div id="listingGallery" class="carousel slide rounded-4 overflow-hidden mb-0" data-bs-ride="false">
+        <div class="carousel-indicators">
+          <% for (let i = 0; i < photos.length; i++) { %>
+            <button type="button" data-bs-target="#listingGallery" data-bs-slide-to="<%= i %>" class="<%= i === 0 ? 'active' : '' %>" aria-label="Photo <%= i + 1 %>"></button>
+          <% } %>
+        </div>
+        <div class="carousel-inner">
+          <% for (let i = 0; i < photos.length; i++) { %>
+            <div class="carousel-item <%= i === 0 ? 'active' : '' %>">
+              <img src="<%= photos[i].url %>" class="d-block w-100 show-img" alt="Listing photo <%= i + 1 %>">
+            </div>
+          <% } %>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#listingGallery" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#listingGallery" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    <% } else if (photos.length === 1) { %>
+      <img src="<%= photos[0].url %>" class="card-img-top show-img rounded-4" alt="listing_image">
+    <% } %>
 
     <div class="card-body">
       <!-- OWNER (SAFE) -->
@@ -30,6 +50,54 @@
 
       <p class="card-text"><%= listing.description %></p>
       <p class="listing-price mb-2">रु <%= Number(listing.price || 0).toLocaleString("en-NP") %> <span class="listing-meta" style="font-size: 0.95rem; font-weight: 400;">/ night</span></p>
+
+      <!-- BOOKING -->
+      <% const isOwnListing = currUser && listing.owner && currUser._id.equals(listing.owner._id); %>
+      <% const fmtDay = (d) => new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); %>
+      <div class="booking-card mt-3" id="book">
+        <% if (isOwnListing) { %>
+          <p class="listing-meta mb-0"><i class="fa-solid fa-circle-info me-1"></i>This is your listing, so guests will book it from here.</p>
+        <% } else if (!currUser) { %>
+          <h4 class="booking-title">Reserve your stay</h4>
+          <p class="listing-meta mb-2">Log in to pick your dates and book.</p>
+          <a href="/login" class="btn btn-brand">Log in to book</a>
+        <% } else { %>
+          <h4 class="booking-title">Reserve your stay</h4>
+          <form action="/listings/<%= listing._id %>/bookings" method="POST" class="booking-form" data-price="<%= Number(listing.price || 0) %>">
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label" for="checkIn">Check-in</label>
+                <input type="date" id="checkIn" name="booking[checkIn]" class="form-control" required />
+              </div>
+              <div class="col-6">
+                <label class="form-label" for="checkOut">Check-out</label>
+                <input type="date" id="checkOut" name="booking[checkOut]" class="form-control" required />
+              </div>
+              <div class="col-12">
+                <label class="form-label" for="guests">Guests</label>
+                <select id="guests" name="booking[guests]" class="form-select">
+                  <% for (let g = 1; g <= 10; g++) { %>
+                    <option value="<%= g %>"><%= g %> guest<%= g > 1 ? "s" : "" %></option>
+                  <% } %>
+                </select>
+              </div>
+            </div>
+            <p class="booking-total mt-3 mb-2" aria-live="polite">Pick your dates to see the total.</p>
+            <button class="btn btn-brand w-100">Reserve</button>
+          </form>
+        <% } %>
+
+        <% if (bookedRanges && bookedRanges.length) { %>
+          <div class="booked-dates mt-3">
+            <div class="small fw-semibold mb-1">Already booked</div>
+            <ul class="list-unstyled mb-0 small text-muted">
+              <% for (const r of bookedRanges) { %>
+                <li><i class="fa-regular fa-calendar-xmark me-1"></i><%= fmtDay(r.checkIn) %> &ndash; <%= fmtDay(r.checkOut) %></li>
+              <% } %>
+            </ul>
+          </div>
+        <% } %>
+      </div>
 
       <!-- EDIT / DELETE (SAFE) -->
       <% if (currUser && listing.owner && currUser._id.equals(listing.owner._id)) { %>

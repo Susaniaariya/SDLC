@@ -4,7 +4,7 @@
     <div class="col-10 offset-1 col-lg-8 offset-lg-2">
         <div class="form-panel">
         <h3><i class="fa-solid fa-house-circle-plus me-2" style="color: var(--brand);"></i>Create a New Listing</h3>
-        <form method="POST" action="/listings" novalidate class = "needs-validation">
+        <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input  name="listing[title]" placeholder="Add a catchy title" class="form-control" required/>
@@ -19,8 +19,8 @@
             </div>
 
             <div class="mb-3">
-                <label for="image" class="form-label">Image Link</label>
-                <input name="listing[image]" placeholder="Enter image URL/LINK" type="text" class="form-control">
+                <label for="images" class="form-label">Photos <span class="text-muted">(up to 5, 5 MB each)</span></label>
+                <input name="images" id="images" type="file" multiple accept="image/*" class="form-control">
             </div>
 
             <div class="row">

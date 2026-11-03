@@ -1,25 +1,27 @@
-// routes/user.js
-
 const express = require("express");
-const router = express.Router(); // CRITICAL: Creates the router instance
-const User = require("../models/user.js");
+const router = express.Router();
 const passport = require("passport");
+const rateLimit = require("express-rate-limit");
 const wrapAsync = require("../utils/wrapAsync.js");
 const { saveRedirectUrl } = require("../middleware.js");
 const userController = require("../controllers/users.js");
 
-// const { saveRedirectUrl } = require("../middleware.js");
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: "Too many attempts from this IP, please try again in 15 minutes.",
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
-// --- 1. GET Register Form ---
 router
   .route("/signup")
   .get(userController.renderSignupForm)
-  .post(wrapAsync(userController.signup));
+  .post(authLimiter, wrapAsync(userController.signup));
 
-// --- 3. GET Login Form ---
 router
   .route("/login")
   .get(userController.renderLoginform)
-  .post(saveRedirectUrl, userController.login);
+  .post(authLimiter, saveRedirectUrl, userController.login);
 router.get("/logout", userController.logout);
 module.exports = router;

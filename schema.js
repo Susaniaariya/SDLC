@@ -7,6 +7,7 @@ module.exports.listingSchema = Joi.object({
     country: Joi.string().required(),
     price: Joi.number().required().min(0),
     image: Joi.string().allow("", null),
+    images: Joi.array().items(Joi.string()).allow(null),
     propertyType: Joi.string()
       .valid("House", "Apartment", "Guesthouse", "Hotel", "Villa", "Cabin")
       .allow("", null),

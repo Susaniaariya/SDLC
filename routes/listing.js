@@ -4,12 +4,14 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const Listing = require("../models/listing.js");
 const { isLoggedIn } = require("../middleware.js");
 const { isOwner, validateListing } = require("../middleware.js");
+const upload = require("../middleware/upload.js");
 
 const listingController = require("../controllers/listing.js");
 // INDEX
 router.route("/").get(wrapAsync(listingController.index)).post(
   isLoggedIn,
-  validateListing, // Middleware handles validation and throws error if failed
+  upload.array("images", 5),
+  validateListing,
   wrapAsync(listingController.createListing),
 );
 router.get("/new", isLoggedIn, listingController.renderNewForm);
@@ -19,6 +21,7 @@ router
   .put(
     isLoggedIn,
     isOwner,
+    upload.array("images", 5),
     validateListing,
     wrapAsync(listingController.updateListing),
   )
