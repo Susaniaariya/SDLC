@@ -1375,3 +1375,72 @@ footer {
 .trip-card.is-past {
   opacity: 0.85;
 }
+
+/* ==========================================================================
+   Cancellation request (guest side — My Trips)
+   ========================================================================== */
+.cancel-pending-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--gold-soft);
+  color: var(--gold-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid var(--gold-soft);
+}
+
+.cancel-request-details summary {
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+
+.cancel-request-details summary::-webkit-details-marker { display: none; }
+
+.cancel-request-details[open] summary {
+  margin-bottom: 0.5rem;
+}
+
+/* ==========================================================================
+   Cancellation review card (host side)
+   ========================================================================== */
+.cancel-review-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 1.4rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.cancel-review-thumb {
+  width: 5rem;
+  height: 4rem;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.cancel-review-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.cancel-review-meta strong {
+  color: var(--ink);
+}
+
+.cancel-reason-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  color: var(--ink);
+  line-height: 1.6;
+}

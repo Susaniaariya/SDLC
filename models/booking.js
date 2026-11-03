@@ -18,9 +18,11 @@ const bookingSchema = new Schema({
   totalPrice: { type: Number, required: true, min: 0 },
   status: {
     type: String,
-    enum: ["confirmed", "cancelled"],
+    enum: ["confirmed", "pending_cancellation", "cancelled"],
     default: "confirmed",
   },
+  cancellationReason: { type: String, default: "" },
+  cancelRequestedAt: { type: Date },
   created_at: { type: Date, default: Date.now },
 });
 
