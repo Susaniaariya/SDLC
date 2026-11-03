@@ -33,7 +33,7 @@
               <div class="card h-100 shadow-sm border-0 listing-card">
                 <div class="position-relative card-img-top-wrap">
                   <img
-                    src="<%= listing.image.url %>"
+                    src="<%= (listing.images && listing.images.length) ? listing.images[0].url : listing.image.url %>"
                     class="card-img-top"
                     alt="listing_image"
                     style="height: 20rem;"

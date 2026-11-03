@@ -129,7 +129,7 @@
           <a href="/listings/<%= listing._id %>" class="listing-link text-decoration-none text-dark">
             <div class="card h-100 shadow-sm border-0 listing-card">
               <div class="position-relative card-img-top-wrap">
-                <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 18rem;" />
+                <img src="<%= (listing.images && listing.images.length) ? listing.images[0].url : listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 18rem;" />
                 <div class="card-img-overlay d-flex align-items-end p-2" style="background: linear-gradient(to top, rgba(0,0,0,0.55), transparent 60%);">
                   <h5 class="text-white mb-0"><%= listing.title %></h5>
                 </div>
