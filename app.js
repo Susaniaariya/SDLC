@@ -143,6 +143,10 @@ app.get("/test-listings", async (req, res) => {
   }
 });
 
+// --- Static legal pages ---
+app.get("/privacy", (req, res) => res.render("privacy.ejs"));
+app.get("/terms", (req, res) => res.render("terms.ejs"));
+
 // --- 404 handler ---
 app.use((req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));

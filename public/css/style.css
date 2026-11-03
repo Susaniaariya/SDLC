@@ -811,6 +811,11 @@ footer {
   text-decoration: none;
 }
 
+.f-info-socials a {
+  display: flex;
+  text-decoration: none;
+}
+
 .f-info-socials i {
   width: 1.7rem;
   height: 1.7rem;
@@ -825,11 +830,10 @@ footer {
     transform var(--transition);
 }
 
-.f-info-socials i:hover {
+.f-info-socials a:hover i {
   background: var(--brand);
   color: #fff;
   transform: translateY(-2px);
-  cursor: pointer;
 }
 
 .f-info-copy {
